@@ -15,14 +15,14 @@ class Default(WorkerEntrypoint):
         url = request.url
         if url.endswith("/test-run"):
             console.log("Manual test run triggered")
-            await self.run_worker()
+            await self.run_worker(env)
             return Response("Test run executed!", status=200)
         return Response("OK", status=200)
 
-    async def scheduled(self, event):
+    async def scheduled(self, event, env):
         console.log("Scheduled event triggered")
         # Run asynchronously without blocking scheduled event
-        event.wait_until(self.run_worker())
+        event.wait_until(self.run_worker(env))
 
     async def run_worker(self, env):
         api_key = env.SECRET_PERPLEXITY_API_KEY
