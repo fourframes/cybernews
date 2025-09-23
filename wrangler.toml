@@ -1,0 +1,13 @@
+name = "cybernews"
+main = "src/entry.py"
+compatibility_date = "2025-09-23"
+
+workers_dev = true
+
+compatibility_flags = ["python_workers"]
+
+[triggers]
+crons = ["0 7 * * 1-5"]  # 9am CEST weekdays
+
+[vars]
+MAX_NEWS_ITEMS = "5"
