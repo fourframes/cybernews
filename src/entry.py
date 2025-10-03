@@ -41,7 +41,7 @@ class Default(WorkerEntrypoint):
 
     async def fetch_cybersecurity_news(self, api_key, max_items):
         prompt = f"""
-Please provide the latest trending cybersecurity news relevant to companies operating in the DACH region (Germany, Austria, Switzerland). 
+Please provide the latest trending cybersecurity news including notable data breaches, hacks and vulnerabilities relevant to companies operating in the DACH region (Germany, Austria, Switzerland). As this command runs every workday, please only show relevant information from today and the last workday. Use sources similar to sources for your information: {', '.join(NEWS_SOURCES)}.
 Respond **only** with a JSON array of objects, no extra text or markdown. Each object contains:
 
 - headline (string)
