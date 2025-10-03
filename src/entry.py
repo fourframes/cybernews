@@ -14,9 +14,10 @@ class Default(WorkerEntrypoint):
     async def fetch(self, request, env):
         url = request.url
         if url.endswith("/test-run"):
-            console.log("Manual test run triggered")
-            await self.run_worker(env)
-            return Response("Test run executed!", status=200)
+            if self.env.TESTRUN:
+                console.log("Manual test run triggered")
+                await self.run_worker(env)
+                return Response("Test run executed!", status=200)
         return Response("OK", status=200)
 
     async def scheduled(self, event, env):
@@ -25,8 +26,8 @@ class Default(WorkerEntrypoint):
         event.wait_until(self.run_worker(env))
 
     async def run_worker(self, env):
-        api_key = env.SECRET_PERPLEXITY_API_KEY
-        slack_url = env.SECRET_SLACK_WEBHOOK_URL
+        api_key = self.env.SECRET_PERPLEXITY_API_KEY
+        slack_url = self.env.SECRET_SLACK_WEBHOOK_URL
         max_items = int(getattr(self.env, "MAX_NEWS_ITEMS", DEFAULT_MAX_NEWS_ITEMS))
 
         try:
@@ -41,34 +42,34 @@ class Default(WorkerEntrypoint):
 
     async def fetch_cybersecurity_news(self, api_key, max_items):
         prompt = f"""
-Please provide the latest trending cybersecurity news including notable data breaches, hacks and vulnerabilities relevant to companies operating in the DACH region (Germany, Austria, Switzerland). As this command runs every workday, please only show relevant information from today and the last workday. Use sources similar to sources for your information: {', '.join(NEWS_SOURCES)}.
-Respond **only** with a JSON array of objects, no extra text or markdown. Each object contains:
+Bitte die aktuellen, relevanten Cybersecurity-Nachrichten der letzten beiden Arbeitstage (heute und letzter Arbeitstag) für Unternehmen in der DACH-Region (Deutschland, Österreich, Schweiz) bereitstellen. Fokus liegt auf bedeutenden Datenpannen, Hacks und Sicherheitslücken mit hoher Relevanz für die Region.
+Nutze Quellen ähnlich wie: {', '.join(NEWS_SOURCES)}.
+Antworte ausschließlich mit einem JSON-Array von Objekten, ohne zusätzlichen Text oder Markdown.
+Jedes Objekt enthält folgende Felder:
 
-- headline (string)
-- excerpt (string)
-- source_url (string)
-
-Example:
+- headline (String)
+- excerpt (String)
+- source_url (String)
 
 [
   {{
-    "headline": "Title of news",
-    "excerpt": "Short summary of news",
-    "source_url": "https://link.to/article"
+    "headline": "Titel der Nachricht",
+    "excerpt": "Kurze Zusammenfassung der Nachricht",
+    "source_url": "https://link.zum/artikel"
   }},
   ...
 ]
 
-Limit the response to {max_items} items.
+Beschränke die Antwort auf {max_items} Einträge.
 """
 
         body = {
             "model": "sonar-pro",
             "messages": [
-                {"role": "system", "content": "You are a helpful assistant summarizing cybersecurity news for DACH businesses."},
+                {"role": "system", "content": "Sie sind ein hilfreicher Assistent, der Cybersicherheitsnachrichten für DACH-Unternehmen zusammenfasst."},
                 {"role": "user", "content": prompt}
             ],
-            "max_tokens": 1000,
+            "max_tokens": 5000,
             "temperature": 0.7,
         }
 
