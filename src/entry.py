@@ -43,7 +43,7 @@ class Default(WorkerEntrypoint):
 
     async def fetch_cybersecurity_news(self, api_key, max_items):
         prompt = f"""
-Bitte die aktuellen, relevanten Cybersecurity-Nachrichten der letzten beiden Arbeitstage (heute und letzter Arbeitstag) für Unternehmen in der DACH-Region (Deutschland, Österreich, Schweiz) bereitstellen. Fokus liegt auf bedeutenden Datenpannen, Hacks und Sicherheitslücken mit hoher Relevanz für die Region.
+Bitte die aktuellen, relevanten Cybersecurity-Nachrichten der letzten beiden Arbeitstage (heute und letzter Arbeitstag) für Unternehmen in der DACH-Region (Deutschland, Österreich, Schweiz) bereitstellen. Fokus liegt auf bedeutenden Datenpannen, Hacks und Sicherheitslücken mit hoher Relevanz für die Region. Bitte bevorzuge Nachrichtenquellen aus dem DACH-Raum, aber internationale Quellen sind ebenfalls akzeptabel, wenn sie für die Region relevant sind. Bitte bevorzuge Nachrichtenquellen, die eher Nachrichtenartikel als Beiträge von Herstellern sind - außer es handelt sich um Sicherheitslücken, welche Hersteller selber publizieren.
 Nutze Quellen ähnlich wie: {', '.join(NEWS_SOURCES)}.
 Antworte ausschließlich mit einem JSON-Array von Objekten, ohne zusätzlichen Text oder Markdown.
 Jedes Objekt enthält folgende Felder:
