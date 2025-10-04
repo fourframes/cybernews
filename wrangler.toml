@@ -7,7 +7,7 @@ workers_dev = true
 compatibility_flags = ["python_workers"]
 
 [triggers]
-crons = ["0 16 * * *"]  # 9am CEST weekdays
+crons = ["0 7 * * *"]  # 9am CEST 
 
 [vars]
 MAX_NEWS_ITEMS = "5"
