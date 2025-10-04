@@ -112,24 +112,26 @@ Beschränke die Antwort auf {max_items} Einträge.
 
 
     async def post_news_to_slack(self, webhook_url: str, news_items):
-        # Create JS Headers instance properly using .new()
         headers = Headers.new()
         headers.set("Content-Type", "application/json")
 
+        # Build a single message block
+        blocks = []
         for item in news_items:
-            # Prepare JSON body as string
-            message = {
-                "text": f"*{item['headline']}*\n{item['excerpt']}\n<{item['source_url']}|Read more>"
-            }
-            body = json.dumps(message)
+            blocks.append(f"*{item['headline']}*\n{item['excerpt']}\n<{item['source_url']}|Read more>")
+        message_text = "\n\n".join(blocks)
 
-            # Make the POST request
-            options = Object.fromEntries([
-                ["method", "POST"],
-                ["headers", headers],
-                ["body", body]
-            ])
+        message = {
+            "text": message_text
+        }
+        body = json.dumps(message)
 
-            resp = await fetch(webhook_url, options)
-            if resp.status != 200:
-                raise Exception(f"Slack webhook error: {resp.status} {resp.statusText}")
+        options = Object.fromEntries([
+            ["method", "POST"],
+            ["headers", headers],
+            ["body", body]
+        ])
+
+        resp = await fetch(webhook_url, options)
+        if resp.status != 200:
+            raise Exception(f"Slack webhook error: {resp.status} {resp.statusText}")
