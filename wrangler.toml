@@ -7,8 +7,11 @@ workers_dev = true
 compatibility_flags = ["python_workers"]
 
 [triggers]
-crons = ["0 7 * * *"]  # 9am CEST weekdays
+crons = ["0 16 * * *"]  # 9am CEST weekdays
 
 [vars]
 MAX_NEWS_ITEMS = "5"
 TESTRUN = false
+
+[observability.logs]
+enabled = true

@@ -20,10 +20,11 @@ class Default(WorkerEntrypoint):
                 return Response("Test run executed!", status=200)
         return Response("OK", status=200)
 
-    async def scheduled(self, event, env):
+    async def scheduled(self, event, env, ctx):
         console.log("Scheduled event triggered")
         # Run asynchronously without blocking scheduled event
-        event.wait_until(self.run_worker(env))
+        await self.run_worker(env)
+        return Response("Run executed!", status=200)
 
     async def run_worker(self, env):
         api_key = self.env.SECRET_PERPLEXITY_API_KEY
